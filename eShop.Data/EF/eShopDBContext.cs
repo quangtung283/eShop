@@ -15,7 +15,16 @@ namespace eShop.API.EF
             modelBuilder.ApplyConfiguration(new AppConfiguration());    
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
-           // base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new ProductInCategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderDetailConfiguration());
+            modelBuilder.ApplyConfiguration(new CategoryTransactionConfiguration());
+            modelBuilder.ApplyConfiguration(new ContactCofiguration());
+            modelBuilder.ApplyConfiguration(new LanguageConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductTranslationConfiguration());
+            modelBuilder.ApplyConfiguration(new PromotionConfiguration());
+            modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+            // base.OnModelCreating(modelBuilder);
         }
         public DbSet<Product> Products { get; set; }
         public DbSet<AppConfig> AppConfigs { get; set; }    
@@ -29,6 +38,7 @@ namespace eShop.API.EF
         public DbSet<ProductTranslation> ProductTranslations { get; set; }  
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<Transaction> Transactions { get; set; }    
+        public DbSet<ProductInCategory> ProductInCategories { get; set; }   
 
     }
 }
