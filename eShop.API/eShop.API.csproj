@@ -11,4 +11,9 @@
     <ProjectReference Include="..\eShop.Data\eShop.Data.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>
