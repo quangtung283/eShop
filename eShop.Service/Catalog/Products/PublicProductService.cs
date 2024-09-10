@@ -1,5 +1,4 @@
 ﻿using eShop.Service.Catalog.Products.DTOs;
-using eShop.Service.Catalog.Products.DTOs.Public;
 using eShop.Service.DTOs;
 using System;
 using System.Collections.Generic;
@@ -9,8 +8,11 @@ using System.Threading.Tasks;
 
 namespace eShop.Service.Catalog.Products
 {
-    public interface IPublicProductService
+    public class PublicProductService : IPublicProductService
     {
-         PagedResult<ProductViewModel> GetAllByCategoryId(GetProductPagingRequest request);
+        public PagedResult<ProductViewModel> GetAllByCategoryId(int categoryId, int pageIndex, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

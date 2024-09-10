@@ -1,4 +1,6 @@
 ﻿using eShop.Service.Catalog.Products.DTOs;
+using eShop.Service.Catalog.Products.DTOs.Manage;
+using eShop.Service.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +11,16 @@ namespace eShop.Service.Catalog.Products
 {
     public interface IManageProductService
     {
-        int Create(ProductCreateDTOs createProduct);
+        Task<int> Create(ProductCreateDTOs createProduct);
 
-        int Update(UpdateProductDTOs updateProduct);
+        Task<int> Update(UpdateProductDTOs updateProduct);
 
-        int Delete(int productId); 
-        List<ProductViewModel> GetAll();
-        List<ProductViewModel> GetAllPaging(string keyword , int pageSize , int pageIndex);
+        Task<int> Delete(int productId); 
+        Task<bool> UpdatePrice(int productId,decimal newPrice);
+        Task<bool> UpdateStock(int productId,int addedQuantity);
+        Task AddViewCount(int productId,int viewCount);
+        Task<List<ProductViewModel>> GetAll();
+        Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPaggingDTOs getProductPagging);
+        
     }
 }
