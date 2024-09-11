@@ -7,7 +7,10 @@ using eShop.ViewModels.Catalog.Products.Manage;
 using eShop.ViewModels.Common.DTOs;
 using eShop.ViewModelsViewModels.Catalog.ProductManage;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Server.IISIntegration;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Net.Http.Headers;
 
 
@@ -24,9 +27,14 @@ namespace eShop.Service.Catalog.Products
             _storageService = storageService;
         }
 
+        public Task<int> AddImages(int productId, List<IFormFile> files)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task AddViewCount(int productId, int viewCount)
         {
-           var product = await _context.Products.FindAsync(productId);
+            var product = await _context.Products.FindAsync(productId);
             product.ViewCount += 1;
             await _context.SaveChangesAsync();
         }
@@ -66,10 +74,10 @@ namespace eShop.Service.Catalog.Products
                         FileSize = createProduct.ThumbnailImage.Length,
                         ImagePath = await this.SaveFile(createProduct.ThumbnailImage),
                         IsDefault =true,
-                        SortOrder=1 
+                        SortOrder=1
                     }
                 };
-             }
+            }
             _context.Products.Add(product);
             return await _context.SaveChangesAsync();
         }
@@ -78,14 +86,21 @@ namespace eShop.Service.Catalog.Products
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null) throw new eShopException("Can not find product");
+            
+            var images =  _context.ProductImages.Where(x => x.ProductId == productId);
+            foreach (var image in images) 
+            {
+              await  _storageService.DeleteFileAsync(image.ImagePath);
+
+            }
             _context.Products.Remove(product);
-           return await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
 
-       /* public Task<List<ProductViewModel>> GetAll()
-        {
-            throw new NotImplementedException();
-        }*/
+        /* public Task<List<ProductViewModel>> GetAll()
+         {
+             throw new NotImplementedException();
+         }*/
 
         public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPaggingDTOs getProductPagging)
         {
@@ -94,14 +109,14 @@ namespace eShop.Service.Catalog.Products
                         join pt in _context.ProductTranslations on p.Id equals pt.ProductId
                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId
                         join c in _context.Categories on pic.CategoyId equals c.Id
-                        select new { p, pt,pic };
+                        select new { p, pt, pic };
             //2.Filter
             if (!string.IsNullOrEmpty(getProductPagging.KeyWord))
                 query = query.Where(x => x.pt.Name.Contains(getProductPagging.KeyWord));
 
-            if(getProductPagging.CategoryId.Count > 0)
+            if (getProductPagging.CategoryId.Count > 0)
             {
-                query = query.Where(p=>getProductPagging.CategoryId.Contains(p.pic.CategoyId));
+                query = query.Where(p => getProductPagging.CategoryId.Contains(p.pic.CategoyId));
             }
             //3.Paging
             int totalRow = await query.CountAsync();
@@ -109,40 +124,68 @@ namespace eShop.Service.Catalog.Products
                 .Take(getProductPagging.PageSize)
                 .Select(x => new ProductViewModel()
                 {
-                    Id=x.p.Id,
-                    Name=x.pt.Name,
-                    DateCreated=x.p.DateCreated,
-                    Description=x.pt.Description,
-                    Details=x.pt.Details,
-                    LanguageId=x.pt.LanguageId,
-                    OriginalPrice=x.p.OriginalPrice,
-                    Price=x.p.Price,
-                    SeoAlias=x.pt.SeoAlias,
-                    SeoDescription=x.pt.SeoDescription,
-                    SeoTitle=x.pt.SeoTitle,
+                    Id = x.p.Id,
+                    Name = x.pt.Name,
+                    DateCreated = x.p.DateCreated,
+                    Description = x.pt.Description,
+                    Details = x.pt.Details,
+                    LanguageId = x.pt.LanguageId,
+                    OriginalPrice = x.p.OriginalPrice,
+                    Price = x.p.Price,
+                    SeoAlias = x.pt.SeoAlias,
+                    SeoDescription = x.pt.SeoDescription,
+                    SeoTitle = x.pt.SeoTitle,
                 }).ToListAsync();
             //4.Select 
             var pageResult = new PagedResult<ProductViewModel>()
             {
                 TotalRecord = totalRow,
-                Items= data
+                Items = data
             };
             return pageResult;
+        }
+
+        public Task<List<ProductImageViewModel>> GetListImage(int productId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> RemoveImages(int productId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<int> Update(UpdateProductDTOs updateProduct)
         {
             var product = _context.Products.Find(updateProduct.Id);
             var productTranslations = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == updateProduct.Id
-            && x.LanguageId== updateProduct.LanguageId);
-            if (product == null || productTranslations==null) throw new eShopException("Can not find id");
+            && x.LanguageId == updateProduct.LanguageId);
+            if (product == null || productTranslations == null) throw new eShopException("Can not find id");
             productTranslations.Name = updateProduct.Name;
             productTranslations.SeoAlias = updateProduct.SeoAlias;
             productTranslations.SeoDescription = updateProduct.SeoDescription;
-            productTranslations.SeoTitle = updateProduct.SeoTitle;  
+            productTranslations.SeoTitle = updateProduct.SeoTitle;
             productTranslations.Description = updateProduct.SeoDescription;
             productTranslations.Details = updateProduct.Details;
-           return await _context.SaveChangesAsync();
+            //Save file 
+            if (updateProduct.ThumbnailImage != null)
+            {
+                var thumbnailImage = await _context.ProductImages.FirstOrDefaultAsync(x => x.IsDefault == true && x.ProductId == updateProduct.Id);
+                if (thumbnailImage != null)
+                {
+
+
+                    thumbnailImage.FileSize = updateProduct.ThumbnailImage.Length;
+                    thumbnailImage.ImagePath = await this.SaveFile(updateProduct.ThumbnailImage);
+                    _context.ProductImages.Update(thumbnailImage);
+                }
+            }
+            return await _context.SaveChangesAsync();
+        }
+
+        public Task<int> UpdateImage(int imageId, string caption, bool isDefault)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> UpdatePrice(int productId, decimal newPrice)
@@ -150,7 +193,7 @@ namespace eShop.Service.Catalog.Products
             var product = _context.Products.Find(productId);
             if (product == null) throw new eShopException("Can not find id");
             product.Price = newPrice;
-            return await _context.SaveChangesAsync()>0;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> UpdateStock(int productId, int addedQuantity)
@@ -165,7 +208,7 @@ namespace eShop.Service.Catalog.Products
             var originalFileName = ContentDispositionHeaderValue.Parse(fromFile.ContentDisposition).FileName;
             var fileName = $"{Guid.NewGuid()}.{Path.GetExtension(originalFileName)}";
             await _storageService.SaveFileAsync(fromFile.OpenReadStream(), fileName);
-            return fileName ;
+            return fileName;
         }
     }
 }
