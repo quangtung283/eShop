@@ -27,9 +27,29 @@ namespace eShop.Service.Catalog.Products
             _storageService = storageService;
         }
 
-        public Task<int> AddImages(int productId, List<IFormFile> files)
+        public async Task<int> AddImages(int productId, List<IFormFile> files)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+            {
+                throw new eShopException("Can not find Id");
+            }
+            foreach (var file in files)
+            {
+                var image = new ProductImage()
+                {
+                    Caption = file.FileName,
+                    DateCreate = DateTime.Now,
+                    FileSize = file.Length,
+                    ImagePath = await this.SaveFile(file),
+                    IsDefault = false,
+                    SortOrder = 1,
+                    ProductId = productId
+
+                };
+                _context.ProductImages.Add(image);
+            }
+            return await _context.SaveChangesAsync();
         }
 
         public async Task AddViewCount(int productId, int viewCount)
@@ -86,11 +106,11 @@ namespace eShop.Service.Catalog.Products
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null) throw new eShopException("Can not find product");
-            
-            var images =  _context.ProductImages.Where(x => x.ProductId == productId);
-            foreach (var image in images) 
+
+            var images = _context.ProductImages.Where(x => x.ProductId == productId);
+            foreach (var image in images)
             {
-              await  _storageService.DeleteFileAsync(image.ImagePath);
+                await _storageService.DeleteFileAsync(image.ImagePath);
 
             }
             _context.Products.Remove(product);
@@ -145,14 +165,33 @@ namespace eShop.Service.Catalog.Products
             return pageResult;
         }
 
-        public Task<List<ProductImageViewModel>> GetListImage(int productId)
+        public async Task<List<ProductImageViewModel>> GetListImage(int productId)
         {
-            throw new NotImplementedException();
+            var images = await _context.ProductImages
+        .Where(x => x.ProductId == productId)
+        .Select(x => new ProductImageViewModel()
+        {
+            Id = x.Id,           
+            FileSize = x.FileSize,
+            IsDefault = x.IsDefault
+        }).ToListAsync();
+
+            return images;
         }
 
-        public Task<int> RemoveImages(int productId)
+        public async Task<int> RemoveImages(int productId)
         {
-            throw new NotImplementedException();
+
+            var images = await _context.ProductImages.Where(x => x.ProductId == productId).ToListAsync();
+            if (images == null || images.Count == 0) throw new eShopException("No images found");
+
+            foreach (var image in images)
+            {
+                await _storageService.DeleteFileAsync(image.ImagePath);
+                _context.ProductImages.Remove(image);
+            }
+
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<int> Update(UpdateProductDTOs updateProduct)
@@ -183,9 +222,25 @@ namespace eShop.Service.Catalog.Products
             return await _context.SaveChangesAsync();
         }
 
-        public Task<int> UpdateImage(int imageId, string caption, bool isDefault)
+        public async Task<int> UpdateImage(int imageId, string caption, bool isDefault)
         {
-            throw new NotImplementedException();
+            var image = await _context.ProductImages.FindAsync(imageId);
+            if (image == null) throw new eShopException("Image not found");
+
+            image.Caption = caption;
+            image.IsDefault = isDefault;
+
+            if (isDefault)
+            {
+                // Unset the default flag from other images of the same product
+                var otherImages = await _context.ProductImages.Where(x => x.ProductId == image.ProductId && x.Id != imageId).ToListAsync();
+                foreach (var otherImage in otherImages)
+                {
+                    otherImage.IsDefault = false;
+                }
+            }
+
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<bool> UpdatePrice(int productId, decimal newPrice)
