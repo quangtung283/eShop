@@ -1,4 +1,6 @@
-﻿namespace eShop.ViewModelsViewModels.Catalog.ProductManage
+﻿using Microsoft.AspNetCore.Http;
+
+namespace eShop.ViewModelsViewModels.Catalog.ProductManage
 {
     public class UpdateProductDTOs
     {
@@ -12,6 +14,6 @@
 
         public string SeoAlias { get; set; }
         public string LanguageId { set; get; }
-
+        public IFormFile ThumbnailImage { set; get; }
     }
 }

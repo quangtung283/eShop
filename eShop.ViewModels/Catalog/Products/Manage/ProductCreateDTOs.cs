@@ -1,4 +1,6 @@
-﻿namespace eShop.ViewModels.Catalog.Products.Manage
+﻿using Microsoft.AspNetCore.Http;
+
+namespace eShop.ViewModels.Catalog.Products.Manage
 {
     public class ProductCreateDTOs
     {
@@ -15,6 +17,6 @@
 
         public string SeoAlias { get; set; }
         public string LanguageId { set; get; }
-
+        public IFormFile ThumbnailImage { set; get; }
     }
 }

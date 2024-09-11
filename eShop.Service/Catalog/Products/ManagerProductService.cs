@@ -1,11 +1,14 @@
 ﻿using eShop.API.EF;
 using eShop.Data.Entities;
+using eShop.Service.Common;
 using eShop.Utilities.Exceptions;
 using eShop.ViewModels.Catalog.Products;
 using eShop.ViewModels.Catalog.Products.Manage;
 using eShop.ViewModels.Common.DTOs;
 using eShop.ViewModelsViewModels.Catalog.ProductManage;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Headers;
 
 
 namespace eShop.Service.Catalog.Products
@@ -13,9 +16,12 @@ namespace eShop.Service.Catalog.Products
     public class ManagerProductService : IManageProductService
     {
         private readonly eShopDBContext _context;
-        public ManagerProductService(eShopDBContext context)
+        private readonly IStorageService _storageService;
+
+        public ManagerProductService(eShopDBContext context, IStorageService storageService)
         {
             _context = context;
+            _storageService = storageService;
         }
 
         public async Task AddViewCount(int productId, int viewCount)
@@ -32,7 +38,7 @@ namespace eShop.Service.Catalog.Products
                 Price = createProduct.Price,
                 OriginalPrice = createProduct.OriginalPrice,
                 Stock = createProduct.Stock,
-                ViewCount =0,
+                ViewCount = 0,
                 DateCreated = DateTime.Now,
                 ProductTranslations = new List<ProductTranslation>()
                 {
@@ -48,9 +54,24 @@ namespace eShop.Service.Catalog.Products
                     }
                 }
             };
+            //Save file 
+            if (createProduct.ThumbnailImage != null)
+            {
+                product.ProductImages = new List<ProductImage>()
+                {
+                    new ProductImage()
+                    {
+                        Caption= "Thumbnail image",
+                        DateCreate = DateTime.Now,
+                        FileSize = createProduct.ThumbnailImage.Length,
+                        ImagePath = await this.SaveFile(createProduct.ThumbnailImage),
+                        IsDefault =true,
+                        SortOrder=1 
+                    }
+                };
+             }
             _context.Products.Add(product);
             return await _context.SaveChangesAsync();
-
         }
 
         public async Task<int> Delete(int productId)
@@ -138,6 +159,13 @@ namespace eShop.Service.Catalog.Products
             if (product == null) throw new eShopException("Can not find id");
             product.Stock += addedQuantity;
             return await _context.SaveChangesAsync() > 0;
+        }
+        private async Task<string> SaveFile(IFormFile fromFile)
+        {
+            var originalFileName = ContentDispositionHeaderValue.Parse(fromFile.ContentDisposition).FileName;
+            var fileName = $"{Guid.NewGuid()}.{Path.GetExtension(originalFileName)}";
+            await _storageService.SaveFileAsync(fromFile.OpenReadStream(), fileName);
+            return fileName ;
         }
     }
 }
