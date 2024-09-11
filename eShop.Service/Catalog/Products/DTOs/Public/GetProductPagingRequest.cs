@@ -9,6 +9,6 @@ namespace eShop.Service.Catalog.Products.DTOs.Public
 {
     public class GetProductPagingRequest :PaggingRequestBase
     {
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
     }
 }

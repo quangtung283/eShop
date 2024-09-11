@@ -15,7 +15,7 @@ namespace eShop.Service.Catalog.Products
         Task<bool> UpdatePrice(int productId,decimal newPrice);
         Task<bool> UpdateStock(int productId,int addedQuantity);
         Task AddViewCount(int productId,int viewCount);
-        Task<List<ProductViewModel>> GetAll();
+        //Task<List<ProductViewModel>> GetAll();
         Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPaggingDTOs getProductPagging);
         
     }
