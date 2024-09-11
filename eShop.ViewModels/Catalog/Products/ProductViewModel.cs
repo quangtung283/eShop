@@ -1,4 +1,4 @@
-﻿namespace eShop.Service.Catalog.Products.DTOs
+﻿namespace eShop.ViewModels.Catalog.Products
 {
     public class ProductViewModel
     {

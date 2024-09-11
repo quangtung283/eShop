@@ -1,7 +1,7 @@
 ﻿using eShop.API.EF;
-using eShop.Service.Catalog.Products.DTOs;
-using eShop.Service.Catalog.Products.DTOs.Public;
-using eShop.Service.DTOs;
+using eShop.ViewModels.Catalog.Products;
+using eShop.ViewModels.Catalog.Products.Public;
+using eShop.ViewModels.Common.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace eShop.Service.Catalog.Products

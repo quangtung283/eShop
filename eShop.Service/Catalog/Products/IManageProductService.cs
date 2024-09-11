@@ -1,6 +1,7 @@
-﻿using eShop.Service.Catalog.Products.DTOs;
-using eShop.Service.Catalog.Products.DTOs.Manage;
-using eShop.Service.DTOs;
+﻿using eShop.ViewModels.Catalog.Products;
+using eShop.ViewModels.Catalog.Products.Manage;
+using eShop.ViewModels.Common.DTOs;
+using eShop.ViewModelsViewModels.Catalog.ProductManage;
 
 
 namespace eShop.Service.Catalog.Products

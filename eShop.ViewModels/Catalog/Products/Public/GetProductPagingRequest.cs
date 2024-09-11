@@ -1,11 +1,11 @@
-﻿using eShop.Service.DTOs;
+﻿using eShop.ViewModels.Common.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eShop.Service.Catalog.Products.DTOs.Public
+namespace eShop.ViewModels.Catalog.Products.Public
 {
     public class GetProductPagingRequest :PaggingRequestBase
     {

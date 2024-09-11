@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eShop.Service.DTOs
+namespace eShop.ViewModels.Common.DTOs
 {
     public class PaggingRequestBase
     {

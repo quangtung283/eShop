@@ -1,9 +1,10 @@
 ﻿using eShop.API.EF;
 using eShop.Data.Entities;
-using eShop.Service.Catalog.Products.DTOs;
-using eShop.Service.Catalog.Products.DTOs.Manage;
-using eShop.Service.DTOs;
 using eShop.Utilities.Exceptions;
+using eShop.ViewModels.Catalog.Products;
+using eShop.ViewModels.Catalog.Products.Manage;
+using eShop.ViewModels.Common.DTOs;
+using eShop.ViewModelsViewModels.Catalog.ProductManage;
 using Microsoft.EntityFrameworkCore;
 
 
