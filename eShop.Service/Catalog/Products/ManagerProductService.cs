@@ -97,7 +97,7 @@ namespace eShop.Service.Catalog.Products
                 };
             }
             _context.Products.Add(product);
-            return await _context.SaveChangesAsync();
+            return product.Id;
         }
 
         public async Task<int> Delete(int productId)
@@ -162,6 +162,30 @@ namespace eShop.Service.Catalog.Products
             };
             return pageResult;
         }
+
+        public async Task<ProductViewModel> GetById(int productId, string languageId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            var producTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == productId
+            && x.LanguageId==languageId);
+            var productViewModel = new ProductViewModel()
+            {
+                Id = productId,
+                DateCreated = product.DateCreated,
+                Description = producTranslation != null ? producTranslation.Description : null,
+                LanguageId =producTranslation.LanguageId,
+                Details = producTranslation!=null ? producTranslation.Details : null,
+                Name = producTranslation != null ? producTranslation.Name : null,
+                OriginalPrice = product.OriginalPrice,
+                Price = product.Price,
+                SeoAlias = producTranslation != null ? producTranslation.SeoAlias : null,
+                SeoDescription = producTranslation != null ? producTranslation.SeoDescription : null,
+                SeoTitle = producTranslation != null ? producTranslation.SeoTitle : null,
+                Stock =product.Stock,
+                ViewCount = product.ViewCount
+            };
+            return productViewModel;    
+    }
 
         public async Task<List<ProductImageViewModel>> GetListImage(int productId)
         {

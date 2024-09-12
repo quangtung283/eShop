@@ -14,13 +14,13 @@ namespace eShop.Service.Catalog.Products
         {
             _context = context;
         }
-
-        public async Task<List<ProductViewModel>> GetAll()
+        // using EF Core 
+        public async Task<List<ProductViewModel>> GetAll(string languageId)
         {
             var products = await _context.Products
          .Include(p => p.ProductTranslations)
          .Include(p => p.ProductInCategories)
-             .ThenInclude(pic => pic.Category)  // Assuming you have a navigation property
+             .ThenInclude(pic => pic.Category)
          .Select(p => new ProductViewModel
          {
              Id = p.Id,
@@ -33,13 +33,13 @@ namespace eShop.Service.Catalog.Products
              Price = p.Price,
              SeoAlias = p.ProductTranslations.FirstOrDefault().SeoAlias,
              SeoDescription = p.ProductTranslations.FirstOrDefault().SeoDescription,
-             SeoTitle = p.ProductTranslations.FirstOrDefault().SeoTitle,
+             SeoTitle = p.ProductTranslations.FirstOrDefault().SeoTitle,            
          })
          .ToListAsync();
 
             return products;
         }
-
+        // using join and projections 
         public async Task<PagedResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request)
         {
             //1.Select join
@@ -47,6 +47,7 @@ namespace eShop.Service.Catalog.Products
                         join pt in _context.ProductTranslations on p.Id equals pt.ProductId
                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId
                         join c in _context.Categories on pic.CategoyId equals c.Id
+                        where pt.LanguageId == request.LanguageId
                         select new { p, pt, pic };
             //2.Filter
             if (request.CategoryId.HasValue && request.CategoryId.Value > 0)

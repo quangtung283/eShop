@@ -10,7 +10,7 @@ namespace eShop.Service.Catalog.Products
         Task<int> Create(ProductCreateDTOs createProduct);
 
         Task<int> Update(UpdateProductDTOs updateProduct);
-
+        Task<ProductViewModel> GetById(int productId,string languageId);
         Task<int> Delete(int productId); 
         Task<bool> UpdatePrice(int productId,decimal newPrice);
         Task<bool> UpdateStock(int productId,int addedQuantity);
