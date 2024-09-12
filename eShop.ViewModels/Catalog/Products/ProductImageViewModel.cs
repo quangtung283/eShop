@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eShop.ViewModels.Catalog.Products.Manage
+namespace eShop.ViewModels.Catalog.Products
 {
-   public class ProductImageViewModel
+    public class ProductImageViewModel
     {
         public int Id { get; set; }
         public string FilePath { get; set; }
         public bool IsDefault { get; set; }
-        public long FileSize {  get; set; }
+        public long FileSize { get; set; }
     }
 }

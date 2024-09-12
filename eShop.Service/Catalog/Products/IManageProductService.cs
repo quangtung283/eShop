@@ -1,7 +1,5 @@
 ﻿using eShop.ViewModels.Catalog.Products;
-using eShop.ViewModels.Catalog.Products.Manage;
 using eShop.ViewModels.Common.DTOs;
-using eShop.ViewModelsViewModels.Catalog.ProductManage;
 using Microsoft.AspNetCore.Http;
 
 

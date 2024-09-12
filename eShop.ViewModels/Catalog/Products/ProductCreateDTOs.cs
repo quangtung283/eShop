@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace eShop.ViewModels.Catalog.Products.Manage
+namespace eShop.ViewModels.Catalog.Products
 {
     public class ProductCreateDTOs
     {

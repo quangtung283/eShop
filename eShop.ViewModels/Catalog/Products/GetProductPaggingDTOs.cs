@@ -1,6 +1,6 @@
 ﻿using eShop.ViewModels.Common.DTOs;
 
-namespace eShop.ViewModels.Catalog.Products.Manage
+namespace eShop.ViewModels.Catalog.Products
 {
     public class GetProductPaggingDTOs : PaggingRequestBase
     {

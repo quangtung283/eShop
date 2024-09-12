@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace eShop.ViewModelsViewModels.Catalog.ProductManage
+namespace eShop.ViewModels.Catalog.Products
 {
     public class UpdateProductDTOs
     {
