@@ -17,26 +17,27 @@ namespace eShop.Service.Catalog.Products
 
         public async Task<List<ProductViewModel>> GetAll()
         {
-            var query = from p in _context.Products
-                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
-                        join c in _context.Categories on pic.CategoyId equals c.Id
-                        select new { p, pt, pic };
-            var data = await query.Select(x => new ProductViewModel()
-                {
-                    Id = x.p.Id,
-                    Name = x.pt.Name,
-                    DateCreated = x.p.DateCreated,
-                    Description = x.pt.Description,
-                    Details = x.pt.Details,
-                    LanguageId = x.pt.LanguageId,
-                    OriginalPrice = x.p.OriginalPrice,
-                    Price = x.p.Price,
-                    SeoAlias = x.pt.SeoAlias,
-                    SeoDescription = x.pt.SeoDescription,
-                    SeoTitle = x.pt.SeoTitle,
-                }).ToListAsync();
-            return data;
+            var products = await _context.Products
+         .Include(p => p.ProductTranslations)
+         .Include(p => p.ProductInCategories)
+             .ThenInclude(pic => pic.Category)  // Assuming you have a navigation property
+         .Select(p => new ProductViewModel
+         {
+             Id = p.Id,
+             Name = p.ProductTranslations.FirstOrDefault().Name,
+             DateCreated = p.DateCreated,
+             Description = p.ProductTranslations.FirstOrDefault().Description,
+             Details = p.ProductTranslations.FirstOrDefault().Details,
+             LanguageId = p.ProductTranslations.FirstOrDefault().LanguageId,
+             OriginalPrice = p.OriginalPrice,
+             Price = p.Price,
+             SeoAlias = p.ProductTranslations.FirstOrDefault().SeoAlias,
+             SeoDescription = p.ProductTranslations.FirstOrDefault().SeoDescription,
+             SeoTitle = p.ProductTranslations.FirstOrDefault().SeoTitle,
+         })
+         .ToListAsync();
+
+            return products;
         }
 
         public async Task<PagedResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request)
