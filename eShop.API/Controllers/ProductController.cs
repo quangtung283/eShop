@@ -23,6 +23,14 @@ namespace eShop.API.Controllers
             var product = await _publicProductService.GetAll(languageId);
             return Ok(product);
         }
+        [HttpGet("GetAllByCategoryId{languageId}")]
+        public async Task<IActionResult> GetAllByCategoryId(GetPublicProductPagingRequest request)
+        {
+            var product = await _publicProductService.GetAllByCategoryId(request);
+            if(product == null) return NotFound();
+            return Ok(product);
+        }
+
         [HttpGet("GetById{productId}")]
         public async Task<IActionResult> GetById(int productId,string languageId)
         {

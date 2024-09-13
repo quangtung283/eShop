@@ -33,16 +33,17 @@ namespace eShop.Service.Catalog.Products
              Price = p.Price,
              SeoAlias = p.ProductTranslations.FirstOrDefault().SeoAlias,
              SeoDescription = p.ProductTranslations.FirstOrDefault().SeoDescription,
-             SeoTitle = p.ProductTranslations.FirstOrDefault().SeoTitle,            
+             SeoTitle = p.ProductTranslations.FirstOrDefault().SeoTitle,
          })
          .ToListAsync();
 
             return products;
         }
-        // using join and projections 
+
         public async Task<PagedResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request)
         {
-            //1.Select join
+            // using join and projections 
+            /*//1.Select join
             var query = from p in _context.Products
                         join pt in _context.ProductTranslations on p.Id equals pt.ProductId
                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId
@@ -79,6 +80,92 @@ namespace eShop.Service.Catalog.Products
                 Items = data
             };
             return pageResult;
+        }*/
+            // Sử dụng Navigation Properties (Thuộc tính dẫn hướng)
+            // 1. Truy vấn sản phẩm với thông tin bản dịch và danh mục
+            var query = _context.Products
+                        .Include(p => p.ProductTranslations) // Lấy thông tin bản dịch
+                        .Include(p => p.ProductInCategories) // Lấy thông tin danh mục của sản phẩm
+                            .ThenInclude(pic => pic.Category) // Lấy thêm thông tin của danh mục
+                        .Where(p => p.ProductTranslations.Any(pt => pt.LanguageId == request.LanguageId)); // Lọc theo ngôn ngữ
+
+            // 2. Lọc theo CategoryId nếu có
+            if (request.CategoryId.HasValue && request.CategoryId.Value > 0)
+            {
+                query = query.Where(p => p.ProductInCategories.Any(pic => pic.CategoyId == request.CategoryId));
+            }
+
+            // 3. Phân trang
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                                  .Take(request.PageSize)
+                                  .Select(p => new ProductViewModel()
+                                  {
+                                      Id = p.Id,
+                                      Name = p.ProductTranslations.FirstOrDefault(pt => pt.LanguageId == request.LanguageId).Name,
+                                      DateCreated = p.DateCreated,
+                                      Description = p.ProductTranslations.FirstOrDefault(pt => pt.LanguageId == request.LanguageId).Description,
+                                      Details = p.ProductTranslations.FirstOrDefault(pt => pt.LanguageId == request.LanguageId).Details,
+                                      LanguageId = request.LanguageId,
+                                      OriginalPrice = p.OriginalPrice,
+                                      Price = p.Price,
+                                      SeoAlias = p.ProductTranslations.FirstOrDefault(pt => pt.LanguageId == request.LanguageId).SeoAlias,
+                                      SeoDescription = p.ProductTranslations.FirstOrDefault(pt => pt.LanguageId == request.LanguageId).SeoDescription,
+                                      SeoTitle = p.ProductTranslations.FirstOrDefault(pt => pt.LanguageId == request.LanguageId).SeoTitle,
+                                  }).ToListAsync();
+
+            // 4. Trả về kết quả
+            var pageResult = new PagedResult<ProductViewModel>()
+            {
+                TotalRecord = totalRow,
+                Items = data
+            };
+            return pageResult;
+            //Sử dụng LINQ với Anonymous Types
+            // Lấy danh sách sản phẩm và thông tin liên quan
+         /*   var query = _context.Products
+                        .Where(p => p.ProductTranslations.Any(pt => pt.LanguageId == request.LanguageId))
+                        .Select(p => new
+                        {
+                            p.Id,
+                            p.DateCreated,
+                            p.OriginalPrice,
+                            p.Price,
+                            Translation = p.ProductTranslations.FirstOrDefault(pt => pt.LanguageId == request.LanguageId),
+                            Categories = p.ProductInCategories
+                        });
+
+            // Lọc theo CategoryId nếu có
+            if (request.CategoryId.HasValue && request.CategoryId.Value > 0)
+            {
+                query = query.Where(p => p.Categories.Any(c => c.CategoyId == request.CategoryId));
+            }
+
+            // Phân trang và chuyển đổi sang ProductViewModel
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                                  .Take(request.PageSize)
+                                  .Select(x => new ProductViewModel()
+                                  {
+                                      Id = x.Id,
+                                      Name = x.Translation.Name,
+                                      DateCreated = x.DateCreated,
+                                      Description = x.Translation.Description,
+                                      Details = x.Translation.Details,
+                                      LanguageId = x.Translation.LanguageId,
+                                      OriginalPrice = x.OriginalPrice,
+                                      Price = x.Price,
+                                      SeoAlias = x.Translation.SeoAlias,
+                                      SeoDescription = x.Translation.SeoDescription,
+                                      SeoTitle = x.Translation.SeoTitle,
+                                  }).ToListAsync();
+
+            var pageResult = new PagedResult<ProductViewModel>()
+            {
+                TotalRecord = totalRow,
+                Items = data
+            };
+            return pageResult;*/
         }
     }
 }
