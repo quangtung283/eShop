@@ -33,30 +33,41 @@ namespace eShop.Service.System
         public async Task<string> Authencate(LoginRequest request)
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
-            if (user == null) throw new eShopException("Can not find Username !");
+            if (user == null) throw new eShopException("Cannot find Username!");
 
             var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
             if (!result.Succeeded)
             {
                 return null;
             }
+
             var role = await _userManager.GetRolesAsync(user);
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email,user.Email),
-                new Claim(ClaimTypes.GivenName,user.FirstName),
-                new Claim(ClaimTypes.Role,string.Join(";",role))
-            };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens : Key "]));
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.GivenName, user.FirstName),
+        new Claim(ClaimTypes.Role, string.Join(";", role))
+    };
+
+            var tokenKey = _config["Tokens:Key"];
+            if (string.IsNullOrEmpty(tokenKey))
+            {
+                throw new Exception("Token key is not configured.");
+            }
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(_config["Tokens : Key "],
-                _config["Tokens : Issuer "],
-                claims,
+            var token = new JwtSecurityToken(
+                issuer: _config["Tokens:Issuer"],
+                audience: _config["Tokens:Issuer"],
+                claims: claims,
                 expires: DateTime.Now.AddHours(3),
                 signingCredentials: creds);
-            return  new JwtSecurityTokenHandler().WriteToken(token);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
 
         public async Task<bool> Register(RegisterRequest request)
         {

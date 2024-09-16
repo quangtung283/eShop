@@ -1,4 +1,5 @@
 ﻿using eShop.Data.Configurations;
+using eShop.Data.DataSeeding;
 using eShop.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -44,6 +45,7 @@ namespace eShop.API.EF
             modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("RoleClaims");
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens").HasKey(x=>x.UserId);
             // base.OnModelCreating(modelBuilder);
+            modelBuilder.Seed();
         }
         public DbSet<Product> Products { get; set; }
         public DbSet<AppConfig> AppConfigs { get; set; }    
