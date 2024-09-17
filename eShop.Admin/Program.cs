@@ -1,8 +1,10 @@
-var builder = WebApplication.CreateBuilder(args);
+using eShop.Admin.Services;
 
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpClient();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddTransient<IUserApiClient, UserApiClient>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
