@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eShop.ViewModels.Common.DTOs
+namespace eShop.ViewModels.Common
 {
-    public class PaggingRequestBase :RequetsBase
+    public class PaggingRequestBase : RequetsBase
     {
         public int PageIndex { get; set; }
         public int PageSize { get; set; }

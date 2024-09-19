@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace eShop.ViewModels.System.User
 {
-    public class GetUserPagingRequest :PaggingRequestBase
+    public class RoleAssignRequest
     {
-        public string Keyword { get; set; }
+        public Guid Id { get; set; }
+        public List<SelectItem> Roles { get; set; } = new List<SelectItem>();
     }
 }

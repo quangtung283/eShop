@@ -1,4 +1,4 @@
-﻿using eShop.ViewModels.Common.DTOs;
+﻿using eShop.ViewModels.Common;
 using eShop.ViewModels.System.User;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -26,7 +26,7 @@ namespace eShop.Admin.Services
             return token;
         }
 
-        public async Task<PagedResult<UserVM>> GetUsersPaging(GetUserPagingRequest request)
+        public async Task<PagedResult<UserVm>> GetUsersPaging(GetUserPagingRequest request)
         {
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAdderss"]);
@@ -34,7 +34,7 @@ namespace eShop.Admin.Services
             var response = await client.GetAsync($"/api/User/paging?pageIndex=" +
                 $"{request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}");
             var body = await response.Content.ReadAsStringAsync();
-            var users = JsonConvert.DeserializeObject<PagedResult<UserVM>>(body);
+            var users = JsonConvert.DeserializeObject<PagedResult<UserVm>>(body);
             return users;
         }
     }

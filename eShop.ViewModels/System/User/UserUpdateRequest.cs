@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace eShop.ViewModels.System.User
 {
-    public class UserVm
+    public class UserUpdateRequest
     {
         public Guid Id { get; set; }
 
@@ -17,18 +17,14 @@ namespace eShop.ViewModels.System.User
         [Display(Name = "Họ")]
         public string LastName { get; set; }
 
-        [Display(Name = "Số điện thoại")]
-        public string PhoneNumber { get; set; }
-
-        [Display(Name = "Tài khoản")]
-        public string UserName { get; set; }
-
-        [Display(Name = "Email")]
-        public string Email { get; set; }
-
         [Display(Name = "Ngày sinh")]
+        [DataType(DataType.Date)]
         public DateTime Dob { get; set; }
 
-        public IList<string> Roles { get; set; }
+        [Display(Name = "Hòm thư")]
+        public string Email { get; set; }
+
+        [Display(Name = "Số điện thoại")]
+        public string PhoneNumber { get; set; }
     }
 }

@@ -1,7 +1,8 @@
-﻿using eShop.Service.System;
+﻿using eShop.Service.System.Users;
 using eShop.ViewModels.System.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace eShop.API.Controllers
 {
@@ -46,7 +47,7 @@ namespace eShop.API.Controllers
         public async Task<IActionResult> GetAllPaging([FromQuery] GetUserPagingRequest request)
         {
 
-            var users = await _userService.GetUserPaging(request);
+            var users = await _userService.GetUsersPaging(request);
             return Ok(users);
         }
 

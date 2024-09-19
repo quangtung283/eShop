@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 
 namespace eShop.ViewModels.Catalog.Products
 {
-    public class GetPublicProductPagingRequest : PaggingRequestBase
+    public class GetManageProductPagingRequest : PaggingRequestBase
     {
+        public string Keyword { get; set; }
+
+        public string LanguageId { get; set; }
+
         public int? CategoryId { get; set; }
     }
 }

@@ -1,5 +1,4 @@
-﻿using eShop.ViewModels.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace eShop.ViewModels.System.User
 {
-    public class GetUserPagingRequest :PaggingRequestBase
+    public class UserDeleteRequest
     {
-        public string Keyword { get; set; }
+        public Guid Id { get; set; }
     }
 }

@@ -2,7 +2,7 @@ using eShop.API.EF;
 using eShop.Data.Entities;
 using eShop.Service.Catalog.Products;
 using eShop.Service.Common;
-using eShop.Service.System;
+using eShop.Service.System.Users;
 using eShop.ViewModels.System.User;
 using FluentValidation;
 using FluentValidation.AspNetCore;

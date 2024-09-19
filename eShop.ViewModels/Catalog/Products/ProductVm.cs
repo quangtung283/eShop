@@ -1,8 +1,13 @@
-﻿namespace eShop.ViewModels.Catalog.Products
-{
-    public class ProductViewModel
-    {
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
+namespace eShop.ViewModels.Catalog.Products
+{
+    public class ProductVm
+    {
         public int Id { set; get; }
         public decimal Price { set; get; }
         public decimal OriginalPrice { set; get; }
@@ -19,5 +24,10 @@
         public string SeoAlias { get; set; }
         public string LanguageId { set; get; }
 
+        public bool? IsFeatured { get; set; }
+
+        public string ThumbnailImage { get; set; }
+
+        public List<string> Categories { get; set; } = new List<string>();
     }
 }

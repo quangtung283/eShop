@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\eShop.API\eShop.API.csproj" />
+    <ProjectReference Include="..\eShop.Service\eShop.Service.csproj" />
     <ProjectReference Include="..\eShop.ViewModels\eShop.ViewModels.csproj" />
   </ItemGroup>
 
