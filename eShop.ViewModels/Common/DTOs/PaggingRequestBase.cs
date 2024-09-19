@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace eShop.ViewModels.Common.DTOs
 {
-    public class PaggingRequestBase
+    public class PaggingRequestBase :RequetsBase
     {
         public int PageIndex { get; set; }
         public int PageSize { get; set; }

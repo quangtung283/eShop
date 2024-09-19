@@ -25,9 +25,8 @@ option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection
 
 
 //Declare DI 
-builder.Services.AddTransient<IPublicProductService, PublicProductService>();
 builder.Services.AddTransient<IStorageService, FileStorageService>();
-builder.Services.AddTransient<IManageProductService, ManagerProductService>();
+builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<UserManager<User>, UserManager<User>>();
 builder.Services.AddTransient<SignInManager<User>, SignInManager<User>>();
 builder.Services.AddTransient<RoleManager<Role>, RoleManager<Role>>();

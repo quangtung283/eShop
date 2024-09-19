@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace eShop.Service.Catalog.Products
 {
-    public interface IManageProductService
+    public interface IProductService
     {
         Task<int> Create(ProductCreateDTOs createProduct);
 
@@ -22,6 +22,8 @@ namespace eShop.Service.Catalog.Products
         Task<ProductImageViewModel> GetImageById(int imageId);
         Task<int> RemoveImage(int imageId);
         Task<int> UpdateImage( int imageId,ProductImageUpdateRequest request);
-        Task<List<ProductImageViewModel>> GetListImage(int productId);  
+        Task<List<ProductImageViewModel>> GetListImage(int productId);
+        Task<PagedResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request);
+        Task<List<ProductViewModel>> GetAll(string languageId);
     }
 }

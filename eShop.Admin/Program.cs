@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
 builder.Services.AddMvc();
+builder.Services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(20); });
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(option =>
 {
     option.LoginPath = "/User/Login/";
     option.AccessDeniedPath = "/User/Forbidden/";
 });
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<IUserApiClient, UserApiClient>();
@@ -29,7 +31,7 @@ app.UseAuthentication();
 app.UseRouting();
 
 app.UseAuthorization();
-
+app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
