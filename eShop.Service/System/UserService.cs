@@ -1,8 +1,10 @@
 ﻿using eShop.Data.Entities;
 using eShop.Utilities.Exceptions;
+using eShop.ViewModels.Common.DTOs;
 using eShop.ViewModels.System.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Tokens;
@@ -46,7 +48,8 @@ namespace eShop.Service.System
             {
         new Claim(ClaimTypes.Email, user.Email),
         new Claim(ClaimTypes.GivenName, user.FirstName),
-        new Claim(ClaimTypes.Role, string.Join(";", role))
+        new Claim(ClaimTypes.Role, string.Join(";", role)),
+        new Claim(ClaimTypes.Name,request.UserName)
     };
 
             var tokenKey = _config["Tokens:Key"];
@@ -68,6 +71,32 @@ namespace eShop.Service.System
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        public async Task<PagedResult<UserVM>> GetUserPaging(GetUserPagingRequest request)
+        {
+            var query = _userManager.Users;
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query= query.Where(x=>x.UserName.Contains(request.Keyword) || x.PhoneNumber.Contains(request.Keyword));
+            }
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new UserVM()
+                {
+                    Email = x.Email,
+                    PhoneNumber = x.PhoneNumber,
+                    UserName = x.UserName,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Id = x.Id
+                }).ToListAsync();
+            var pagedResult = new PagedResult<UserVM>() 
+            { 
+                TotalRecord = totalRow, 
+                Items = data
+            };
+            return pagedResult;
+        }
 
         public async Task<bool> Register(RegisterRequest request)
         {

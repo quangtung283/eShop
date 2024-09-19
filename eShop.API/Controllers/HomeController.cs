@@ -1,11 +1,9 @@
-﻿using eShop.Admin.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using eShop.MVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace eShop.Admin.Controllers
+namespace eShop.API.Controllers
 {
-    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -17,15 +15,13 @@ namespace eShop.Admin.Controllers
 
         public IActionResult Index()
         {
-            var user = User.Identity.Name;
+
             return View();
         }
-
         public IActionResult Privacy()
         {
             return View();
         }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

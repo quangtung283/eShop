@@ -1,4 +1,6 @@
-﻿using eShop.ViewModels.System.User;
+﻿using eShop.ViewModels.Common.DTOs;
+using eShop.ViewModels.System.User;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace eShop.Service.System
 {
@@ -6,5 +8,6 @@ namespace eShop.Service.System
     {
         Task<string> Authencate(LoginRequest request);
         Task<bool> Register(RegisterRequest request);
+        Task<PagedResult<UserVM>> GetUserPaging(GetUserPagingRequest request);
     }
 }
