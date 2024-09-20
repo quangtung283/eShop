@@ -6,6 +6,7 @@ using System.Diagnostics;
 
 namespace eShop.Admin.Controllers
 {
+    [Area("Admin")]
     public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;

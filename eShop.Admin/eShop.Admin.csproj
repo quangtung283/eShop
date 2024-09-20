@@ -8,12 +8,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\eShop.ApiIntegration\eShop.ApiIntegration.csproj" />
-    <ProjectReference Include="..\eShop.API\eShop.API.csproj" />
     <ProjectReference Include="..\eShop.Service\eShop.Service.csproj" />
     <ProjectReference Include="..\eShop.ViewModels\eShop.ViewModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.1.1" />
     <PackageReference Include="Microsoft.IdentityModel.Logging" Version="6.35.0" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.35.0" />
