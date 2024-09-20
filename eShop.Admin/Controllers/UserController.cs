@@ -1,4 +1,4 @@
-﻿using eShop.Admin.Services;
+﻿using eShop.ApiIntegration;
 using eShop.ViewModels.Common;
 using eShop.ViewModels.System.User;
 using Microsoft.AspNetCore.Authentication;
@@ -38,7 +38,7 @@ namespace eShop.Admin.Controllers
                 PageIndex = pageIndex,
                 PageSize = pageSize
             };
-            var data = await _userApiClient.GetUsersPaging(request);
+            var data = await _userApiClient.GetUsersPagings(request);
             ViewBag.Keyword = keyword;
             if (TempData["result"] != null)
             {
@@ -50,7 +50,7 @@ namespace eShop.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            var result = await _userApiClient.Get(id);
+            var result = await _userApiClient.GetById(id);
             return View(result.ResultObj);
         }
 

@@ -9,6 +9,7 @@ namespace eShop.API.Controllers
     //api/products
     [Route("api/[controller]")]
     [ApiController]
+
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;

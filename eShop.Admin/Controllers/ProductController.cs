@@ -1,4 +1,5 @@
-﻿using eShop.Utilities.Contrants;
+﻿using eShop.ApiIntegration;
+using eShop.Utilities.Contrants;
 using eShop.ViewModels.Catalog.Products;
 using eShop.ViewModels.Common;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace eShop.Admin.Controllers
 {
+
     public class ProductController : Controller
     {
         private readonly IProductApiClient _productApiClient;

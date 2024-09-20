@@ -1,5 +1,4 @@
-﻿using eShop.Admin.Services;
-using eShop.ViewModels.System.User;
+﻿using eShop.ViewModels.System.User;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using eShop.Utilities.Contrants;
+using eShop.ApiIntegration;
 
 namespace eShop.Admin.Controllers
 {
